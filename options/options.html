@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <title>Attribution Helper — profile projektów</title>
+  <style>
+    :root{
+      --tlo:#FFFFFF; --tlo-2:#F6F8FB; --ramka:#D3DAE5; --linia:#EDF1F7;
+      --tekst:#16202E; --tekst-slaby:#5C6B80;
+      --ok:#00854A; --blad:#D02222; --akcent:#1F5FA8; --akcent-tlo:#EAF1FA;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;padding:0;background:var(--tlo-2);color:var(--tekst);
+         font:14px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;}
+    .obszar{max-width:880px;margin:0 auto;padding:32px 24px 64px;}
+    h1{font-size:24px;margin:0 0 6px;letter-spacing:-.2px;}
+    .lead{color:var(--tekst-slaby);margin:0 0 28px;max-width:66ch;}
+    h2{font-size:15px;margin:28px 0 10px;}
+    .karta{background:var(--tlo);border:1px solid var(--ramka);border-radius:9px;padding:20px;margin-bottom:18px;}
+    label{display:block;font-size:12px;color:var(--tekst-slaby);margin-bottom:4px;font-weight:600;}
+    input,textarea,select{width:100%;font:inherit;font-size:13px;padding:8px 10px;
+      border:1px solid var(--ramka);border-radius:6px;background:var(--tlo);color:var(--tekst);}
+    textarea{font-family:ui-monospace,Consolas,monospace;font-size:12px;min-height:150px;resize:vertical;}
+    input:focus,textarea:focus,select:focus{outline:2px solid var(--akcent);outline-offset:0;border-color:var(--akcent);}
+    .pole{margin-bottom:14px;}
+    .rzad{display:flex;gap:10px;align-items:flex-end;}
+    .rzad .pole{flex:1;margin-bottom:0;}
+    button{font:inherit;font-size:13px;cursor:pointer;border-radius:6px;padding:8px 14px;
+      border:1px solid var(--ramka);background:var(--tlo-2);color:var(--tekst);}
+    button:hover{border-color:var(--akcent);color:var(--akcent);}
+    button:focus-visible{outline:2px solid var(--akcent);outline-offset:1px;}
+    button.glowny{background:var(--akcent);border-color:var(--akcent);color:#fff;font-weight:600;}
+    button.glowny:hover{background:#184C87;color:#fff;}
+    button.usun{color:var(--blad);border-color:#F0C8C8;}
+    button.usun:hover{background:var(--blad);color:#fff;border-color:var(--blad);}
+    .przyciski{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;
+       color:var(--tekst-slaby);padding:7px 8px;border-bottom:1px solid var(--ramka);}
+    td{padding:8px;border-bottom:1px solid var(--linia);}
+    tbody tr:last-child td{border-bottom:0;}
+    .pusto{color:var(--tekst-slaby);text-align:center;padding:22px 0;}
+    .podpowiedz{font-size:12px;color:var(--tekst-slaby);margin-top:6px;}
+    .komunikat{padding:10px 13px;border-radius:6px;margin-bottom:16px;font-size:13px;}
+    .komunikat.ok{background:#E6F5EE;color:var(--ok);border:1px solid #B8E2CE;}
+    .komunikat.blad{background:#FBEAEA;color:var(--blad);border:1px solid #F0C8C8;}
+    code{font-family:ui-monospace,Consolas,monospace;font-size:12px;background:var(--tlo-2);
+         border:1px solid var(--linia);border-radius:4px;padding:1px 5px;}
+
+    /* Edytor domen: wiersz = jedna domena projektu z opcjonalnymi oczekiwaniami. */
+    .edytor{border:1px solid var(--ramka);border-radius:7px;overflow:hidden;}
+    .edytor-naglowek,.edytor-wiersz{display:grid;gap:8px;align-items:center;padding:7px 10px;
+      grid-template-columns:minmax(150px,1.5fr) minmax(110px,1fr) minmax(120px,1fr) minmax(90px,.8fr) 30px;}
+    .edytor-naglowek{background:var(--tlo-2);border-bottom:1px solid var(--ramka);
+      font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--tekst-slaby);font-weight:600;}
+    .edytor-wiersz{border-bottom:1px solid var(--linia);}
+    .edytor-wiersz:last-child{border-bottom:0;}
+    .edytor-wiersz input{font-size:12.5px;padding:6px 8px;}
+    .edytor-wiersz input.zly{border-color:var(--blad);}
+    .edytor-pusto{padding:18px 10px;text-align:center;color:var(--tekst-slaby);font-size:12.5px;}
+    .skasuj{border:1px solid var(--ramka);background:var(--tlo);color:var(--tekst-slaby);
+      border-radius:5px;padding:4px 0;width:30px;line-height:1;font-size:14px;}
+    .skasuj:hover{background:var(--blad);border-color:var(--blad);color:#fff;}
+    details{margin-top:12px;}
+    summary{cursor:pointer;font-size:12px;color:var(--tekst-slaby);}
+    summary:hover{color:var(--akcent);}
+    details textarea{margin-top:8px;min-height:110px;}
+  </style>
+</head>
+<body>
+  <div class="obszar">
+    <h1>Profile projektów</h1>
+    <p class="lead">
+      Profil jest opcjonalny. Bez niego rozszerzenie działa na dowolnej stronie i pokazuje, co widzi.
+      Z profilem dodatkowo sprawdza, czy załadował się właściwy kontener i strumień, oraz wie,
+      które domeny należą do jednego projektu — a to potrzebne do wykrywania samoodesłań.
+    </p>
+
+    <div id="komunikat"></div>
+
+    <div class="karta">
+      <h2 style="margin-top:0">Zapisane profile</h2>
+      <table>
+        <thead><tr><th>Nazwa</th><th>Domeny</th><th></th></tr></thead>
+        <tbody id="listaProfili"></tbody>
+      </table>
+    </div>
+
+    <div class="karta">
+      <h2 style="margin-top:0" id="tytulEdycji">Nowy profil</h2>
+      <div class="pole">
+        <label for="nazwa">Nazwa projektu</label>
+        <input id="nazwa" placeholder="np. sklep-pl" autocomplete="off">
+      </div>
+      <div class="pole">
+        <label>Domeny projektu</label>
+        <div class="edytor">
+          <div class="edytor-naglowek">
+            <span>Domena</span><span>Kontener GTM</span><span>Measurement ID</span><span>Property</span><span></span>
+          </div>
+          <div id="wiersze"></div>
+        </div>
+        <p class="podpowiedz">
+          Wymagana jest tylko domena — bez protokołu i bez ścieżki. Kontener
+          (<code>GTM-XXXXXXX</code>), measurement ID (<code>G-XXXXXXXXXX</code>) i property
+          wypełnij, gdy panel ma oceniać zgodność; puste pole znaczy „nie sprawdzaj".
+          Subdomeny są obejmowane automatycznie, więc <code>sklep.pl</code> pokrywa też
+          <code>koszyk.sklep.pl</code>.
+        </p>
+        <div class="przyciski">
+          <button id="dodajWiersz">+ Dodaj domenę</button>
+        </div>
+
+        <details id="wklejanie">
+          <summary>Wklej listę tekstem (format z wcześniejszych wersji)</summary>
+          <textarea id="domenyTekst" spellcheck="false" placeholder="sklep.pl
+blog.sklep.pl | GTM-XXXXXXX | G-XXXXXXXXXX | 000000000
+sklep-partner.pl"></textarea>
+          <div class="przyciski">
+            <button id="wczytajTekst">Zamień wiersze na wklejone</button>
+          </div>
+          <p class="podpowiedz">
+            Jedna domena na wiersz, opcjonalne oczekiwania po znaku <code>|</code>
+            w kolejności: kontener, measurement ID, property.
+          </p>
+        </details>
+      </div>
+      <div class="przyciski">
+        <button class="glowny" id="zapisz">Zapisz profil</button>
+        <button id="wyczyscFormularz">Wyczyść formularz</button>
+      </div>
+    </div>
+
+    <div class="karta">
+      <h2 style="margin-top:0">Przenoszenie między komputerami</h2>
+      <p class="podpowiedz" style="margin-top:0">
+        Eksport zapisuje wszystkie profile do pliku JSON. Na drugim komputerze wczytaj ten plik,
+        żeby mieć tę samą konfigurację bez przepisywania.
+      </p>
+      <div class="przyciski">
+        <button id="eksport">Eksportuj profile</button>
+        <button id="importPrzycisk">Importuj z pliku</button>
+        <input type="file" id="importPlik" accept="application/json" hidden>
+      </div>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

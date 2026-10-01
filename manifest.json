@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Attribution Helper",
+  "version": "2.1.0",
+  "description": "Podglad na zywo atrybucji GA4: source/medium, kanal, sesja, ciaglosc client_id miedzy domenami i stan zgody.",
+  "permissions": [
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "tlo.js" },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Attribution Helper"
+  },
+  "options_page": "options/options.html",
+  "icons": {
+    "16": "icons/ikona-16.png",
+    "48": "icons/ikona-48.png",
+    "128": "icons/ikona-128.png"
+  }
+}

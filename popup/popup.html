@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root{
+      --tlo:#FFFFFF; --tlo-2:#F4F6FA; --ramka:#D3DAE5; --linia:#EDF1F7;
+      --tekst:#16202E; --tekst-slaby:#5C6B80;
+      --ok:#00854A; --ostrzezenie:#A96A00; --blad:#D02222;
+      --akcent:#1F5FA8; --akcent-tlo:#EAF1FA;
+    }
+    *{box-sizing:border-box;}
+    body{width:640px;margin:0;padding:0;background:var(--tlo);color:var(--tekst);
+         font:12.5px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;}
+
+    header{padding:13px 16px;border-bottom:1px solid var(--ramka);display:flex;
+           align-items:center;gap:12px;background:var(--tlo-2);}
+    header h1{font-size:14px;margin:0;flex:1;letter-spacing:.1px;}
+    .stan{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--tekst-slaby);}
+    .dioda{width:9px;height:9px;border-radius:50%;background:var(--tekst-slaby);}
+    .dioda.wl{background:var(--ok);}
+
+    .sterowanie{padding:13px 16px;border-bottom:1px solid var(--ramka);display:flex;gap:8px;align-items:center;}
+    button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--ramka);
+           background:var(--tlo-2);color:var(--tekst);padding:7px 12px;font-size:12px;}
+    button:hover{border-color:var(--akcent);color:var(--akcent);}
+    button:focus-visible{outline:2px solid var(--akcent);outline-offset:1px;}
+    button.glowny{background:var(--akcent);border-color:var(--akcent);color:#fff;font-weight:600;flex:0 0 auto;}
+    button.glowny:hover{background:#184C87;color:#fff;}
+    button.stop{background:var(--blad);border-color:var(--blad);color:#fff;font-weight:600;}
+    button.stop:hover{background:#A81B1B;color:#fff;}
+    select{font:inherit;font-size:12px;padding:6px 8px;border-radius:6px;
+           border:1px solid var(--ramka);background:var(--tlo);color:var(--tekst);flex:1;}
+
+    .podsumowanie{display:flex;gap:0;border-bottom:1px solid var(--ramka);}
+    .kafel{flex:1;padding:11px 14px;border-right:1px solid var(--linia);}
+    .kafel:last-child{border-right:0;}
+    .kafel b{display:block;font-size:19px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums;}
+    .kafel span{font-size:10px;color:var(--tekst-slaby);text-transform:uppercase;letter-spacing:.5px;}
+    .kafel.zle b{color:var(--blad);}
+    .kafel.dobrze b{color:var(--ok);}
+
+    .sekcja{padding:12px 16px;}
+    .sekcja h2{font-size:11px;text-transform:uppercase;letter-spacing:.6px;
+               color:var(--tekst-slaby);margin:0 0 8px;font-weight:700;}
+
+    table{width:100%;border-collapse:collapse;font-size:11px;}
+    th{text-align:left;color:var(--tekst-slaby);font-weight:600;font-size:9.5px;
+       text-transform:uppercase;letter-spacing:.4px;padding:5px 6px;
+       border-bottom:1px solid var(--ramka);background:var(--tlo-2);}
+    td{padding:6px;border-bottom:1px solid var(--linia);vertical-align:top;}
+    tbody tr:last-child td{border-bottom:0;}
+    .ok{color:var(--ok);font-weight:600;}
+    .blad{color:var(--blad);font-weight:600;}
+    .uwaga{color:var(--ostrzezenie);font-weight:600;}
+    .drobne{display:block;color:var(--tekst-slaby);font-size:9.5px;margin-top:1px;}
+    .pusto{color:var(--tekst-slaby);text-align:center;padding:20px 0;font-size:11.5px;}
+    .lista{max-height:230px;overflow-y:auto;border:1px solid var(--ramka);border-radius:6px;}
+
+    footer{padding:11px 16px;border-top:1px solid var(--ramka);display:flex;gap:8px;background:var(--tlo-2);}
+    footer button{flex:1;font-size:11px;padding:6px;}
+
+    .notka{margin:0 16px 12px;padding:9px 11px;background:var(--akcent-tlo);
+           border-left:3px solid var(--akcent);border-radius:0 5px 5px 0;
+           font-size:11px;line-height:1.5;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Attribution Helper</h1>
+    <div class="stan"><span class="dioda" id="dioda"></span><span id="etykietaStanu">nieaktywna</span></div>
+  </header>
+
+  <div class="sterowanie">
+    <button class="glowny" id="przelacz">Rozpocznij sesję</button>
+    <select id="profil" title="Profil projektu — opcjonalny"></select>
+    <button id="ustawienia" title="Profile i ustawienia">Profile</button>
+  </div>
+
+  <div class="podsumowanie" id="podsumowanie"></div>
+
+  <div class="sekcja">
+    <h2>Przejścia między domenami</h2>
+    <div class="lista">
+      <table>
+        <thead><tr><th>Przejście</th><th>Tożsamość</th><th>Sesja</th><th>Źródło po</th><th>Zgoda</th></tr></thead>
+        <tbody id="przejscia"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sekcja">
+    <h2>Ścieżka</h2>
+    <div class="lista">
+      <table>
+        <thead><tr><th>Czas</th><th>Adres</th><th>Source / medium</th><th>Kanał</th></tr></thead>
+        <tbody id="kroki"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="notka" id="notka" hidden></div>
+
+  <footer>
+    <button id="kopiuj">Kopiuj raport</button>
+    <button id="pobierz">Pobierz JSON</button>
+    <button id="wyczysc">Wyczyść ślad</button>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
